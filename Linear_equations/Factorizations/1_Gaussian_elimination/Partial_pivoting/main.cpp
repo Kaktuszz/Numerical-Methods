@@ -37,28 +37,34 @@ int main(){
     //     b[i] = (std::rand() % 20) - 10;
     // }
 
-
     int n = a.size();
-    for(int i = 0; i<n; i++){
-        for(int j = i+1; j<n; j++){
-          long double  x = (a[j][i]/a[i][i])*-1;
-            for(int k = i; k<n; k++){
-                a[j][k] = a[j][k]+(a[i][k])*x;
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            if(i == j) {
+                continue;
             }
-            b[j] = b[j]+b[i]*x;
+            for(int k = 0; k < n; k++) {
+                if(k == i) {
+                    continue;
+                }
+                a[j][k] = a[i][i] * a[j][k] - a[j][i] * a[i][k];
+            }
+            b[j] = a[i][i]*b[j] - a[j][i]*b[i]; 
+            a[j][i] = 0;
         }
-    }
-    
+}
+
 // backsubstitution
-    std::vector<long double> result(n);
+std::vector<long double> result(n);
     for(int i = n-1; i>=0; i--){
         result[i] = b[i];
         for(int j = i+1; j<n; j++){
             result[i] -= a[i][j]*result[j];
         }
         result[i] /= a[i][i];
-    }
-
+}
+    
     writeToFile(result);
     
     return 0;
